@@ -63,13 +63,13 @@
                         var i = 1;
                         foreach (var item in Model)
                         {
-                            <tr>
+                            <tr id="trow_@item.Id">
                                 <td>@i</td>
                                 <td>@item.Title</td>
                                 <td>@item.Position</td>
                                 <td>
                                     <a href="/admin/category/edit/@item.Id" class="btn btn-sm btn-primary">Sửa</a>
-                                    <a href="/admin/category/delete/@item.Id" class="btn btn-sm btn-danger">Xóa</a>
+                                    <a href="#" data-id="@item.Id" class="btn btn-sm btn-danger btnDelete">Xóa</a>
                                 </td>
                             </tr>
                             i++;
@@ -96,3 +96,26 @@
     </section>
     <!-- /.content -->
 
+@section scripts{
+        <script>
+            $(document).ready(function () {
+                $('body').on('click', '.btnDelete', function () {
+                    var id = $(this).data("id");
+                    var conf = confirm('Bạn có muốn xóa bản ghi này không?');
+                    if (conf === true) {
+                        $.ajax(
+                            {
+                                url: '/admin/category/delete',
+                                type: 'POST',
+                                data: { id : id },
+                                success: function (rs) {
+                                    if (rs.success) {
+                                        $('#trow_' + id).remove();
+                                    }
+                                }
+                            });
+                    }
+                });
+            });
+        </script>
+    }
